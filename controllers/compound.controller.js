@@ -24,7 +24,7 @@ export const addCompound = async (req,res)=>{
             return res.status(401).json({error:"please fill all fields"})
         }
         if(status !== "sold" && status !== "available" && status !== "soon"){
-            return res.status(400).json({error:"please select what is available in status"})
+            return res.status(400).json({error:"من فضلك اختار الخيارات المتاحه في خانه الحاله"})
         }
         const newCompound = await Compound.create({
             mainImage,images,title,location,status,video
@@ -46,10 +46,10 @@ export const updateCompound = async (req,res)=>{
         }
         const {title,mainImage,location,images,status,video} = req.body
         if(!images.length && mainImage && !title && !location && !status){
-            return res.status(401).json({error:"please update at leaste one fieald"})
+            return res.status(401).json({error:"من فضلك قم بتعديل خانه واحده علي الاقل"})
         }
         if(status !== "sold" && status !== "available" && status !== "soon"){
-            return res.status(400).json({error:"please select what is available in status"})
+            return res.status(400).json({error:"من فضلك اختار الخيارات المتاحه في خانه الحاله"})
         }
         const updatedCompound = await Compound.findByIdAndUpdate(id,{
             title,
