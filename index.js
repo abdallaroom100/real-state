@@ -1,14 +1,18 @@
-// Import packages
-const express = require("express");
-const home = require("./routes/home");
 
+import express from "express"
+import home from "./routes/home.js"
+import connectDb from "./models/config.js"
+import compoundRouter from "./routers/compound.router.js"
+import apartmentRouter from "./routers/apartment.router.js"
 // Middlewares
 const app = express();
 app.use(express.json());
 
-// Routes
 app.use("/home", home);
-
+app.use("/compound", compoundRouter);
+app.use("/apartment", apartmentRouter);
+// Routes
+connectDb()
 // connection
-const port = process.env.PORT || 9001;
+const port = process.env.PORT || 5000;
 app.listen(port, () => console.log(`Listening to port ${port}`));
