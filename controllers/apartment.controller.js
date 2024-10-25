@@ -137,13 +137,13 @@ export const updateApartment = async (req, res) => {
 
 
 export const deleteApartment = async (req,res)=>{
-    const {compoundId} = req.params
+    const {apartmentId} = req.params
      
     try {
-        if(!mongoose.Types.ObjectId.isValid(id)){
+        if(!mongoose.Types.ObjectId.isValid(apartmentId)){
             return res.status(400).json({error:"invalid id"})
         }
-        const deletedCompound = await Apartment.findByIdAndDelete(compoundId,{
+        const deletedCompound = await Apartment.findByIdAndDelete(apartmentId,{
             new:true
         })
         if(!deletedCompound){
