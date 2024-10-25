@@ -74,6 +74,7 @@ export const addApartment = async (req, res) => {
 
 export const updateApartment = async (req, res) => {
   const { compoundId } = req.params;
+  console.log(compoundId)
   try {
     if (!mongoose.Types.ObjectId.isValid(compoundId)) {
       return res.status(400).json({ error: "invalid id" });
@@ -108,7 +109,7 @@ export const updateApartment = async (req, res) => {
         .json({ error: "please select what is available in status" });
     }
     const updatedApartment = await Apartment.findByIdAndUpdate(
-      id,
+      compoundId,
       {
         mainImage,
         images,
@@ -136,13 +137,13 @@ export const updateApartment = async (req, res) => {
 
 
 export const deleteApartment = async (req,res)=>{
-    const {id} = req.params
+    const {compoundId} = req.params
      
     try {
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({error:"invalid id"})
         }
-        const deletedCompound = await Apartment.findByIdAndDelete(id,{
+        const deletedCompound = await Apartment.findByIdAndDelete(compoundId,{
             new:true
         })
         if(!deletedCompound){

@@ -7,6 +7,6 @@ const router = express.Router()
 router.get("/:compoundId",getAllApartments)
 router.post("/add/:compoundId",addApartment)
 router.patch("/update/:compoundId",updateApartment)
-router.delete("/delete/:id",deleteApartment)
+router.delete("/delete/:compoundId",deleteApartment)
 
 export default router

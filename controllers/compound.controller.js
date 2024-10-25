@@ -39,7 +39,7 @@ export const addCompound = async (req,res)=>{
 
 export const updateCompound = async (req,res)=>{
     const {id} = req.params
-     
+
     try {
         if(!mongoose.Types.ObjectId.isValid(id)){
             return res.status(400).json({error:"invalid id"})
