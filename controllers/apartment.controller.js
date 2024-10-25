@@ -126,7 +126,7 @@ export const updateApartment = async (req, res) => {
       }
     );
     if (!updatedApartment) {
-      return res.status(401).json({ error: "compound not found" });
+      return res.status(401).json({ error: "apartment not found" });
     }
     res.status(200).json(updatedApartment);
   } catch (error) {
@@ -147,7 +147,7 @@ export const deleteApartment = async (req,res)=>{
             new:true
         })
         if(!deletedCompound){
-            return res.status(401).json({error:"updated not found"})
+            return res.status(401).json({error:"apartment not found"})
         }
         res.status(200).json(deletedCompound)
     } catch (error) {
