@@ -92,13 +92,13 @@ export const updateApartment = async (req, res) => {
     } = req.body;
 
     if (
-      !mainImage ||
-      !images?.length ||
-      !space ||
-      !floor ||
-      !status ||
-      !bathrooms ||
-      !description ||
+      !mainImage &&
+      !images?.length &&
+      !space &&
+      !floor &&
+      !status &&
+      !bathrooms &&
+      !description &&
       !rooms
     ) {
       return res.status(401).json({ error: "please update atleast one thing" });
