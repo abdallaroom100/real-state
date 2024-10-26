@@ -9,6 +9,7 @@ const generateToken = (userId, res) => {
     maxAge: 1000* 60 * 60 * 24 * 15,
     httpOnly:true,
     sameSite:"lax",
+    path:"/",
     // secure:process.env.NODE_ENV !== "development"
     secure:true
   })
