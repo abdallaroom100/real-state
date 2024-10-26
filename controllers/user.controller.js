@@ -106,17 +106,21 @@ export const updateUser = async (req,res)=>{
         if(username.length < 3){
             return res.status(400).json({ error: "username must be atleast 3 chars" });
         }
-
+  const existUser = await User.findOne({username})
+  if(existUser) 
+       if(username){
+        return res.status(400).json({error:"this username is already exist"})
+       }
         const hash = bcrypt.hashSync(password,10)
         const user = await User.findByIdAndUpdate(userId,{
             username,
             password:hash
-        })
+        },{new:true})
 
         if (!user) {
             return res.status(401).json({ error: "user not found" });
         }
-        return res.status(200).json("user has deleted successfully")
+        return res.status(200).json(user)
     } catch (error) {
         console.log(`error in delete user function`);
         console.log(error.message);
