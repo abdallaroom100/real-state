@@ -11,7 +11,7 @@ const generateToken = (userId, res) => {
     sameSite:"lax",
     path:"/",
     // secure:process.env.NODE_ENV !== "development"
-    secure:true
+    secure:false
   })
 };
 
