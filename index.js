@@ -10,7 +10,10 @@ import cookieParser from "cookie-parser"
 // Middlewares
 const app = express();
 app.use(express.json());
-app.use(cors())
+app.use(cors({
+    origin:"https://real-state-liard.vercel.app",
+    credentials:true
+}))
 app.use(cookieParser())
 app.use("/home", home);
 app.use("/compound", compoundRouter);
