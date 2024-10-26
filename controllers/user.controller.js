@@ -29,6 +29,8 @@ export const signUpUser = async (req, res) => {
     if(username.length < 3){
         return res.status(400).json({ error: "username must be atleast 3 chars" });
     }
+     const user = await User.findOne({username})
+     if(user) return res.status(400).json({error:"this username is already exist"})
     const hash = bcrypt.hashSync(password, 10);
     const newUser = await User.create({
       username,
