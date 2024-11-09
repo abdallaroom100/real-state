@@ -4,7 +4,7 @@ import { protectRoute } from "../utils/protectedRoute.js"
 
 const router = express.Router()
 // compound/
-router.get("/",protectRoute,getAllCompounds)
+router.get("/",getAllCompounds)
 router.get("/find/:id",getCurrentCompound)
 router.post("/add",protectRoute,addCompound)
 router.patch("/update/:id",protectRoute,updateCompound)
