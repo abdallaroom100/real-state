@@ -15,6 +15,23 @@ export const getAllCompounds = async (req,res)=>{
     }
 }
 
+
+export const getCurrentCompound = async(req,res)=>{
+    const {id} = req.params
+    try {
+         if(!mongoose.Types.ObjectId.isValid(id)){
+            return res.status(400).json({error:"not valid compound id"})
+         }
+         const compound = await Compound.findById(id)
+         if(!compound) 
+            return res.status(401).json({error:"the compound not found"})
+       return res.status(200).json(compound)
+    } catch (error) {
+        console.log(`error in get curernt compound function`)
+        console.log(error.message)
+    }
+}
+
 export const addCompound = async (req,res)=>{
     try {
         const {mainImage,images,title,location,status, video} = req.body

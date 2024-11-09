@@ -13,9 +13,25 @@ export const getAllApartments = async (req, res) => {
   } catch (error) {
     console.log("error in get all apartments function");
     console.log(error.message);
-  }
+  } 
 };
 
+export const getCurrentApartment = async (req,res)=>{
+   const {id} = req.params
+  try {
+    if(!mongoose.Types.ObjectId.isValid(id)){
+      return req.status(400).json({error:"invalid apartment id"})
+    }
+    const apartment = await Apartment.findById(id)
+    if(!apartment){
+      return res.status(400).json("apartment not found")
+    }
+    return res.status(200).json(apartment)
+  } catch (error) {
+    console.log(`error in get current apartment function`)
+    console.log(error.message)
+  }
+}
 export const addApartment = async (req, res) => {
   try {
     const { compoundId } = req.params;
