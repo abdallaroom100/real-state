@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { Apartment } from "../models/Compound.schema.js";
 
-export const getAllApartments = async (req, res) => {
+export const getAllCompoundApartment = async (req, res) => {
   try {
     const { compoundId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(compoundId)) {
@@ -11,10 +11,24 @@ export const getAllApartments = async (req, res) => {
     console.log(apartments);
     res.status(200).json(apartments);
   } catch (error) {
-    console.log("error in get all apartments function");
+    console.log("error in get all compound apartments function");
     console.log(error.message);
   } 
 };
+
+
+export const getAllApartments = async(req,res)=>{
+  try {
+    const apartments = await Apartment.find()
+    if(!apartments) {
+      return res.status(400).json({error:"there is not apartments "})
+    }
+    res.status(200).json(apartments)
+  } catch (error) {
+    console.log("error in get all apartments function");
+    console.log(error.message);
+  }
+}
 
 export const getCurrentApartment = async (req,res)=>{
    const {id} = req.params
