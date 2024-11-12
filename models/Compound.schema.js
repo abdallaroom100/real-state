@@ -24,6 +24,7 @@ const compoundSchema = new Schema(
       type: String,
       required: true,
     },
+    description:String,
     status: {
       type: String,
       enum: ["available", "soon", "sold"],
