@@ -44,6 +44,7 @@ export const signUpUser = async (req, res) => {
   }
 };
 export const loginUser = async (req, res) => {
+
   const { username, password } = req.body;
   try {
     if (!username || !password) {
@@ -129,11 +130,11 @@ export const updateUser = async (req,res)=>{
 
 export const logOut = async (req, res) => {
     try {
-      res.clearCookie("jwt")
-      .json("user has logged out successfully");
-    //  res.cookie("jwt","",{
-    //     maxAge:0
-    //  }).json("user has logged out successfully");
+      res.cookie('jwt', '', {
+        httpOnly: true,
+        secure: true,
+        expires: new Date(0),  
+    });
     } catch (error) {
       console.log(`error in logout user function`);
       console.log(error.message);

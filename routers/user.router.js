@@ -11,6 +11,6 @@ router.post("/signup",signUpUser)
 router.post("/login",loginUser)
 router.patch("/update/:userId",protectRoute,updateUser)
 router.delete("/delete/:userId",protectRoute,deleteUser)
-router.post("/logout",logOut)
+router.post("/logout",protectRoute,logOut)
 
 export default router
