@@ -15,27 +15,27 @@ import jwt from "jsonwebtoken";
     
 //   })
 // };
-export const generateToken = (userId, res) => {
-  const token = jwt.sign({ userId }, "secret", {
-    expiresIn: "11d",
-  });
-  
-  res.cookie('jwt', token, {
-    maxAge: 1000 * 60 * 60 * 24 * 11,  
-    httpOnly: true,
-    sameSite: "None",
-    path: "/",
-    secure: true,  
-    domain: "https://real-state-liard.vercel.app",  
-  });
-};
-// const generateToken = (userId, res) => {
-//   const token = jwt.sign({ userId },"secret", {
+// export const generateToken = (userId, res) => {
+//   const token = jwt.sign({ userId }, "secret", {
 //     expiresIn: "11d",
 //   });
-//   res.setHeader('Authorization',`Bearer ${token}`)
-//   res.status(200)
+  
+//   res.cookie('jwt', token, {
+//     maxAge: 1000 * 60 * 60 * 24 * 11,  
+//     httpOnly: true,
+//     sameSite: "None",
+//     path: "/",
+//     secure: true,  
+//     domain: "https://real-state-liard.vercel.app",  
+//   });
 // };
+const generateToken = (userId, res) => {
+  const token = jwt.sign({ userId },"secret", {
+    expiresIn: "11d",
+  });
+  res.setHeader('Authorization',`Bearer ${token}`)
+  res.status(200)
+};
 
 export default generateToken;
  
