@@ -35,16 +35,16 @@ export const getCurrentCompound = async (req, res) => {
 
 export const addCompound = async (req, res) => {
   try {
-    const { mainImage, images, title, location, status, video } = req.body;
+    const { mainImage, images, title, location, status, video,description } = req.body;
 
-    console.log(mainImage, images, title, location, status);
-    if (!mainImage || !images?.length || !title || !location || !status) {
+
+    if (!mainImage  || !title || !location || !status|| !description) {
       return res.status(401).json({ error: "please fill all fields" });
     }
     if (status !== "sold" && status !== "available" && status !== "soon") {
       return res
         .status(400)
-        .json({ error: "من فضلك اختار الخيارات المتاحه في خانه الحاله" });
+        .json({ error: "please select what is available in status" });
     }
     const newCompound = await Compound.create({
       mainImage,
@@ -69,16 +69,16 @@ export const updateCompound = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "invalid id" });
     }
-    const { title, mainImage, location, images, status, video } = req.body;
-    if (!images.length && mainImage && !title && !location && !status) {
+    const { title, mainImage, location, images, status, video,description } = req.body;
+    if (  mainImage && !title && !location && !status &&!description ) {
       return res
         .status(401)
-        .json({ error: "من فضلك قم بتعديل خانه واحده علي الاقل" });
+        .json({ error: "fill all required fields for updating" });
     }
     if (status !== "sold" && status !== "available" && status !== "soon") {
       return res
         .status(400)
-        .json({ error: "من فضلك اختار الخيارات المتاحه في خانه الحاله" });
+        .json({ error: "please select what is available in status" });
     }
     const updatedCompound = await Compound.findByIdAndUpdate(
       id,
@@ -89,6 +89,7 @@ export const updateCompound = async (req, res) => {
         video,
         images,
         status,
+        description
       },
       {
         new: true,

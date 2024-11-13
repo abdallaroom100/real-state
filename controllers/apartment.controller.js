@@ -66,7 +66,6 @@ export const addApartment = async (req, res) => {
 
     if (
       !mainImage ||
-      !images?.length ||
       !space ||
       !floor ||
       !status ||
@@ -123,7 +122,6 @@ export const updateApartment = async (req, res) => {
 
     if (
       !mainImage &&
-      !images?.length &&
       !space &&
       !floor &&
       !status &&
@@ -131,7 +129,7 @@ export const updateApartment = async (req, res) => {
       !description &&
       !rooms
     ) {
-      return res.status(401).json({ error: "please update atleast one thing" });
+      return res.status(401).json({ error: "قم بملئ البيانات الاساسية" });
     }
     if (status !== "sold" && status !== "available" && status !== "soon") {
       return res

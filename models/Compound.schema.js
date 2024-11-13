@@ -10,7 +10,7 @@ const compoundSchema = new Schema(
     },
     images: {
       type: [String],
-      required: true,
+      
     },
     video: {
       type: String,
@@ -24,7 +24,10 @@ const compoundSchema = new Schema(
       type: String,
       required: true,
     },
-    description:String,
+    description: {
+      type: [String],
+      required: true,
+    },
     status: {
       type: String,
       enum: ["available", "soon", "sold"],
@@ -43,7 +46,7 @@ const ApartmentSchema = new Schema({
   },
   images: {
     type: [String],
-    required: true,
+   
   },
   video: {
     type: String,
