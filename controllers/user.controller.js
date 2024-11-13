@@ -135,6 +135,7 @@ export const logOut = async (req, res) => {
         secure: true,
         expires: new Date(0),  
     });
+    res.status(200).json({ message: 'Logout successful' });
     } catch (error) {
       console.log(`error in logout user function`);
       console.log(error.message);
