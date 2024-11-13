@@ -36,8 +36,8 @@ export const signUpUser = async (req, res) => {
       username,
       password: hash,
     });
-    generateToken(newUser._id, res);
-    res.status(200).json(newUser);
+    generateToken(newUser._id, res,req);
+    res.status(200).json({...newUser._doc,token:req.token});
   } catch (error) {
     console.log(`error in signup user function`);
     console.log(error.message);
@@ -65,8 +65,9 @@ export const loginUser = async (req, res) => {
     if (!Vpassword){
         return res.status(401).json({ error: "password is incorrect" });
     }
-    generateToken(user._id, res);
-    res.status(200).json(user);
+    generateToken(user._id, res,req);
+    console.log(req.token)
+    res.status(200).json({...user._doc,token:req.token});
   } catch (error) {
     console.log(`error in login user function`);
     console.log(error.message);

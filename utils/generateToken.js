@@ -29,10 +29,11 @@ import jwt from "jsonwebtoken";
 //     domain: "https://real-state-liard.vercel.app",  
 //   });
 // };
-const generateToken = (userId, res) => {
+const generateToken = (userId, res,req) => {
   const token = jwt.sign({ userId },"secret", {
     expiresIn: "11d",
   });
+  req.token = token
   res.setHeader('Authorization',`Bearer ${token}`)
   res.status(200)
 };
