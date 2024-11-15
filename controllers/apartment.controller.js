@@ -23,6 +23,10 @@ export const getAllApartments = async(req,res)=>{
     if(!apartments) {
       return res.status(400).json({error:"there is not apartments "})
     }
+  //       await Apartment.updateMany(
+  //  {identity:{$exists:false}} ,
+  //  {$set:{identity:"A-1"}}
+  //   )
     res.status(200).json(apartments)
   } catch (error) {
     console.log("error in get all apartments function");
@@ -62,6 +66,7 @@ export const addApartment = async (req, res) => {
       description,
       status,
       rooms,
+      identity
     } = req.body;
 
     if (
@@ -71,7 +76,7 @@ export const addApartment = async (req, res) => {
       !status ||
       !bathrooms ||
       !description ||
-      !rooms
+      !rooms || !identity
     ) {
       return res.status(401).json({ error: "please fill all fields" });
     }
@@ -91,6 +96,7 @@ export const addApartment = async (req, res) => {
       bathrooms,
       description,
       rooms,
+      identity,
       compound: compoundId,
     });
 
@@ -118,6 +124,7 @@ export const updateApartment = async (req, res) => {
       description,
       status,
       rooms,
+      identity,
     } = req.body;
 
     if (
@@ -127,7 +134,7 @@ export const updateApartment = async (req, res) => {
       !status &&
       !bathrooms &&
       !description &&
-      !rooms
+      !rooms && !identity
     ) {
       return res.status(401).json({ error: "قم بملئ البيانات الاساسية" });
     }
@@ -148,6 +155,7 @@ export const updateApartment = async (req, res) => {
         description,
         status,
         rooms,
+        identity
       },
       {
         new: true,

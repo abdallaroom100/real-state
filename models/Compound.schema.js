@@ -20,14 +20,19 @@ const compoundSchema = new Schema(
       type: String,
       required: true,
     },
+    description: {
+      type: String,
+      required: true,
+    },
+    address:{
+      type:String,
+      required:true
+    },
     location: {
       type: String,
       required: true,
     },
-    description: {
-      type: [String],
-      required: true,
-    },
+  
     status: {
       type: String,
       enum: ["available", "soon", "sold"],
@@ -71,6 +76,10 @@ const ApartmentSchema = new Schema({
   description: {
     type: [String],
     required: true,
+  },
+  identity:{
+    type:String,
+  required:true
   },
   status: {
     type: String,

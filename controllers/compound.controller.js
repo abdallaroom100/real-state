@@ -5,10 +5,10 @@ export const getAllCompounds = async (req, res) => {
   try {
     const compounds = await Compound.find();
    
-//      await Compound.updateMany(
-//    {description:{$exists:false}} ,
-//    {$set:{description:"يقع المشروع في أحد أكثر أحياء شمال الرياض الحيوية والمرموقة. يتمتع حي النرجس بتوفر خدمات ومرافق شاملة تعزز راحة سكانه، بما في ذلك التعليم، الرعاية الصحية، والترفيه، مما يجعلها وجهة جذابة ومناسبة للسكن"}}
-//     )
+  //    await Compound.updateMany(
+  //  {description:{$exists:true}} ,
+  //  {$set:{description:"ع المشروع في أحد أكثر أحياء شمال الرياض الحيوية والمرموقة. يتمتع حي النرجس بتوفر خدمات ومرافق شاملة تعزز راحة سكانه، بما في ذلك التعليم، الرعاية الصحية، والترفيه، مما يجعلها وجهة جذابة ومناسبة للسكن"}}
+  //   )
 
     res.status(200).json(compounds);
   } catch (error) {
@@ -35,10 +35,10 @@ export const getCurrentCompound = async (req, res) => {
 
 export const addCompound = async (req, res) => {
   try {
-    const { mainImage, images, title, location, status, video,description } = req.body;
+    const { mainImage, images, title, location, status, video,description,address } = req.body;
 
 
-    if (!mainImage  || !title || !location || !status|| !description) {
+    if (!mainImage  || !title || !location || !status|| !description ||!address ) {
       return res.status(401).json({ error: "please fill all fields" });
     }
     if (status !== "sold" && status !== "available" && status !== "soon") {
@@ -53,6 +53,7 @@ export const addCompound = async (req, res) => {
       location,
       status,
       video,
+      address
     });
 
     res.status(200).json(newCompound);
@@ -69,8 +70,8 @@ export const updateCompound = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "invalid id" });
     }
-    const { title, mainImage, location, images, status, video,description } = req.body;
-    if (  mainImage && !title && !location && !status &&!description ) {
+    const { title, mainImage, location, images, status, video,description,address } = req.body;
+    if (  mainImage && !title && !location && !status &&!description &&!address ) {
       return res
         .status(401)
         .json({ error: "fill all required fields for updating" });
@@ -89,7 +90,8 @@ export const updateCompound = async (req, res) => {
         video,
         images,
         status,
-        description
+        description,
+        address
       },
       {
         new: true,
