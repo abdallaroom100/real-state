@@ -5,10 +5,6 @@ export const getAllCompounds = async (req, res) => {
   try {
     const compounds = await Compound.find();
    
-  //    await Compound.updateMany(
-  //  {description:{$exists:true}} ,
-  //  {$set:{description:"ع المشروع في أحد أكثر أحياء شمال الرياض الحيوية والمرموقة. يتمتع حي النرجس بتوفر خدمات ومرافق شاملة تعزز راحة سكانه، بما في ذلك التعليم، الرعاية الصحية، والترفيه، مما يجعلها وجهة جذابة ومناسبة للسكن"}}
-  //   )
 
     res.status(200).json(compounds);
   } catch (error) {
@@ -53,7 +49,8 @@ export const addCompound = async (req, res) => {
       location,
       status,
       video,
-      address
+      address,
+      description
     });
 
     res.status(200).json(newCompound);
