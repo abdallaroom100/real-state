@@ -4,7 +4,6 @@ import { Compound } from "../models/Compound.schema.js";
 export const getAllCompounds = async (req, res) => {
   try {
     const compounds = await Compound.find();
-   
 
     res.status(200).json(compounds);
   } catch (error) {
@@ -31,10 +30,27 @@ export const getCurrentCompound = async (req, res) => {
 
 export const addCompound = async (req, res) => {
   try {
-    const { mainImage, images, title, location, status, video,description,address } = req.body;
+    const {
+      mainImage,
+      images,
+      title,
+      location,
+      status,
+      video,
+      description,
+      address,
+      map,
+      pdf,
+    } = req.body;
 
-
-    if (!mainImage  || !title || !location || !status|| !description ||!address ) {
+    if (
+      !mainImage ||
+      !title ||
+      !location ||
+      !status ||
+      !description ||
+      !address
+    ) {
       return res.status(401).json({ error: "please fill all fields" });
     }
     if (status !== "sold" && status !== "available" && status !== "soon") {
@@ -50,7 +66,9 @@ export const addCompound = async (req, res) => {
       status,
       video,
       address,
-      description
+      description,
+      map,
+      pdf,
     });
 
     res.status(200).json(newCompound);
@@ -67,8 +85,26 @@ export const updateCompound = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "invalid id" });
     }
-    const { title, mainImage, location, images, status, video,description,address } = req.body;
-    if (  mainImage && !title && !location && !status &&!description &&!address ) {
+    const {
+      title,
+      mainImage,
+      location,
+      images,
+      status,
+      video,
+      description,
+      address,
+      map,
+      pdf,
+    } = req.body;
+    if (
+      mainImage &&
+      !title &&
+      !location &&
+      !status &&
+      !description &&
+      !address
+    ) {
       return res
         .status(401)
         .json({ error: "fill all required fields for updating" });
@@ -88,7 +124,9 @@ export const updateCompound = async (req, res) => {
         images,
         status,
         description,
-        address
+        address,
+        map,
+        pdf,
       },
       {
         new: true,

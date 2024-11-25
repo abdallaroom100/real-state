@@ -32,7 +32,15 @@ const compoundSchema = new Schema(
       type: String,
       required: true,
     },
-  
+    map:{
+      type:String,
+      default:""
+    },
+    pdf:{
+      type:String,
+      default:""
+    },
+    
     status: {
       type: String,
       enum: ["available", "soon", "sold"],
