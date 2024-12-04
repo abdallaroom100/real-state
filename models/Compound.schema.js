@@ -63,6 +63,7 @@ const ApartmentSchema = new Schema({
   },
   video: {
     type: String,
+    default:"",
   },
   rooms:{
     type:String,
