@@ -66,6 +66,7 @@ export const addApartment = async (req, res) => {
       description,
       status,
       rooms,
+      price,
       identity
     } = req.body;
 
@@ -76,7 +77,7 @@ export const addApartment = async (req, res) => {
       !status ||
       !bathrooms ||
       !description ||
-      !rooms || !identity
+      !rooms || !identity || !price
     ) {
       return res.status(401).json({ error: "please fill all fields" });
     }
@@ -94,6 +95,7 @@ export const addApartment = async (req, res) => {
       floor,
       status,
       bathrooms,
+      price,
       description,
       rooms,
       identity,
@@ -123,6 +125,7 @@ export const updateApartment = async (req, res) => {
       bathrooms,
       description,
       status,
+      price,
       rooms,
       identity,
     } = req.body;
@@ -134,7 +137,7 @@ export const updateApartment = async (req, res) => {
       !status &&
       !bathrooms &&
       !description &&
-      !rooms && !identity
+      !rooms && !identity && ! price
     ) {
       return res.status(401).json({ error: "قم بملئ البيانات الاساسية" });
     }
@@ -154,6 +157,7 @@ export const updateApartment = async (req, res) => {
         bathrooms,
         description,
         status,
+        price,
         rooms,
         identity
       },

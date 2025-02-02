@@ -95,6 +95,7 @@ export const updateCompound = async (req, res) => {
       description,
       address,
       map,
+      
       pdf,
     } = req.body;
     if (
