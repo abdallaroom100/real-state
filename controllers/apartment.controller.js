@@ -50,6 +50,8 @@ export const getCurrentApartment = async (req,res)=>{
     console.log(error.message)
   }
 }
+
+
 export const addApartment = async (req, res) => {
   try {
     const { compoundId } = req.params;

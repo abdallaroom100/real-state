@@ -7,15 +7,23 @@ import apartmentRouter from "./routers/apartment.router.js"
 import userRouter from "./routers/user.router.js"
 import cors from "cors"
 import cookieParser from "cookie-parser"
+import fs from "fs"
 // Middlewares
 const app = express();
 app.use(express.json());
-app.use(cors({
+app.use(cors({ 
     origin: true,
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
+['uploads/images', 'uploads/videos', 'uploads/pdfs'].forEach((folder) => {
+    if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+    }
+});
+app.use('/uploads', express.static('uploads'));
+
 app.use(cookieParser())
 app.use("/home", home);
 app.use("/compound", compoundRouter);
