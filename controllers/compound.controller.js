@@ -293,6 +293,102 @@ export const testUploadFiles =  async (req,res)=>{
 //   }
 // };
 
+// export const updateCompound = async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({ error: "Invalid ID" });
+//     }
+
+//     const { title, location, status, description, address, map, images: imageIds, video: videoId, pdf: pdfId } = req.body;
+
+//     if (!title || !location || !status || !description || !address) {
+//       return res.status(401).json({ error: "Fill all required fields for updating" });
+//     }
+
+//     if (!['sold', 'available', 'soon'].includes(status)) {
+//       return res.status(400).json({ error: "Please select a valid status" });
+//     }
+
+//     const compound = await Compound.findById(id);
+//     if (!compound) {
+//       return res.status(404).json({ error: "Compound not found" });
+//     }
+
+//     const compoundFolder = path.join('uploads', id);
+//     const videoFolder = path.join(compoundFolder, 'videos');
+//     const imagesFolder = path.join(compoundFolder, 'images');
+//     const pdfFolder = path.join(compoundFolder, 'pdfs');
+
+//     const deleteFile = (folder, filename) => {
+//       const filePath = path.join(folder, filename);
+//       if (fs.existsSync(filePath)) {
+//         fs.unlinkSync(filePath);
+//       }
+//     };
+
+//     // **تحديث الصور الجديدة أو الموجودة**
+//     let newImageIds = imageIds ? imageIds.split(',') : [];
+//     if (req.files?.images) {
+//       req.files.images.forEach((image) => {
+//         const imageId = `${uuidv4()}${path.extname(image.originalname)}`;
+//         newImageIds.push(imageId);
+//         fs.renameSync(image.path, path.join(imagesFolder, imageId));
+//       });
+
+//       // **حذف الصور اللي مش موجودة**
+//       compound.images.forEach((oldId) => {
+//         if (!newImageIds.includes(oldId)) {
+//           deleteFile(imagesFolder, oldId);
+//         }
+//       });
+//     }
+
+//     // **تحديث الفيديو**
+//     let newVideoId = videoId;
+//     if (req.files?.video) {
+//       if (compound.video) {
+//         deleteFile(videoFolder, compound.video);
+//       }
+//       newVideoId = `${uuidv4()}${path.extname(req.files.video[0].originalname)}`;
+//       fs.renameSync(req.files.video[0].path, path.join(videoFolder, newVideoId));
+//     }
+
+//     // **تحديث الـ PDF**
+//     let newPdfId = pdfId;
+//     if (req.files?.pdf) {
+//       if (compound.pdf) {
+//         deleteFile(pdfFolder, compound.pdf);
+//       }
+//       newPdfId = `${uuidv4()}${path.extname(req.files.pdf[0].originalname)}`;
+//       fs.renameSync(req.files.pdf[0].path, path.join(pdfFolder, newPdfId));
+//     }
+
+//     // **تحديث الـ Database**
+//     const updatedCompound = await Compound.findByIdAndUpdate(
+//       id,
+//       {
+//         title,
+//         location,
+//         images: newImageIds,
+//         video: newVideoId,
+//         status,
+//         description,
+//         mainImage: newMainImage, 
+//         address,
+//         map,
+//         pdf: newPdfId, 
+//       },
+//       { new: true } 
+//     );
+
+//     res.status(200).json({ message: "Compound updated successfully", compound: updatedCompound });
+//   } catch (error) {
+//     console.error("Error in updateCompound function:", error.message);
+//     res.status(500).json({ error: "Internal server error" });
+//   }
+// };
 export const updateCompound = async (req, res) => {
   const { id } = req.params;
 
@@ -316,10 +412,10 @@ export const updateCompound = async (req, res) => {
       return res.status(404).json({ error: "Compound not found" });
     }
 
-    const compoundFolder = path.join('uploads', id);
-    const videoFolder = path.join(compoundFolder, 'videos');
-    const imagesFolder = path.join(compoundFolder, 'images');
-    const pdfFolder = path.join(compoundFolder, 'pdfs');
+    const compoundFolder = path.join("uploads", id);
+    const videoFolder = path.join(compoundFolder, "videos");
+    const imagesFolder = path.join(compoundFolder, "images");
+    const pdfFolder = path.join(compoundFolder, "pdfs");
 
     const deleteFile = (folder, filename) => {
       const filePath = path.join(folder, filename);
@@ -329,7 +425,7 @@ export const updateCompound = async (req, res) => {
     };
 
     // **تحديث الصور الجديدة أو الموجودة**
-    let newImageIds = imageIds ? imageIds.split(',') : [];
+    let newImageIds = imageIds ? imageIds.split(",") : [];
     if (req.files?.images) {
       req.files.images.forEach((image) => {
         const imageId = `${uuidv4()}${path.extname(image.originalname)}`;
@@ -337,12 +433,28 @@ export const updateCompound = async (req, res) => {
         fs.renameSync(image.path, path.join(imagesFolder, imageId));
       });
 
-      // **حذف الصور اللي مش موجودة**
+      // **حذف الصور القديمة اللي مش موجودة**
       compound.images.forEach((oldId) => {
         if (!newImageIds.includes(oldId)) {
           deleteFile(imagesFolder, oldId);
         }
       });
+    }
+
+    // **تحديث الـ Main Image**
+    let newMainImage = compound.mainImage;
+    if (req.files?.mainImage) {
+      // حذف الصورة القديمة لو موجودة
+      if (newMainImage) {
+        deleteFile(imagesFolder, newMainImage);
+      }
+
+      // حفظ الصورة الجديدة
+      const mainImageId = `${uuidv4()}${path.extname(req.files.mainImage[0].originalname)}`;
+      fs.renameSync(req.files.mainImage[0].path, path.join(imagesFolder, mainImageId));
+
+      // تحديث المتغير
+      newMainImage = mainImageId;
     }
 
     // **تحديث الفيديو**
@@ -375,6 +487,7 @@ export const updateCompound = async (req, res) => {
         video: newVideoId,
         status,
         description,
+        mainImage: newMainImage, // ✅ هنا بنسجل الـ ID الجديد
         address,
         map,
         pdf: newPdfId,
@@ -388,7 +501,6 @@ export const updateCompound = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
 export const deleteCompound = async (req, res) => {
   const { id } = req.params;
 
