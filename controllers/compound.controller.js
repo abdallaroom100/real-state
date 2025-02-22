@@ -501,22 +501,53 @@ export const updateCompound = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// export const deleteCompound = async (req, res) => {
+//   const { id } = req.params;
+
+//   try {
+//     if (!mongoose.Types.ObjectId.isValid(id)) {
+//       return res.status(400).json({ error: "invalid id" });
+//     }
+//     const deletedCompound = await Compound.findByIdAndDelete(id, {
+//       new: true,
+//     });
+//     if (!deletedCompound) {
+//       return res.status(401).json({ error: "compound not found" });
+//     }
+//     res.status(200).json(deletedCompound);
+//   } catch (error) {
+//     console.log("error in update compound function");
+//     console.log(error.message);
+//   }
+// };
+
+
 export const deleteCompound = async (req, res) => {
   const { id } = req.params;
 
   try {
     if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ error: "invalid id" });
+      return res.status(400).json({ error: "Invalid ID" });
     }
-    const deletedCompound = await Compound.findByIdAndDelete(id, {
-      new: true,
-    });
+
+    const deletedCompound = await Compound.findByIdAndDelete(id);
     if (!deletedCompound) {
-      return res.status(401).json({ error: "compound not found" });
+      return res.status(404).json({ error: "Compound not found" });
     }
-    res.status(200).json(deletedCompound);
+
+    // مسار المجلد الذي يحمل اسم الـ ID
+    const folderPath = path.join("uploads", id);
+
+    // حذف المجلد إذا كان موجودًا
+    if (fs.existsSync(folderPath)) {
+      fs.rmSync(folderPath, { recursive: true, force: true });
+      console.log(`Folder ${id} deleted successfully.`);
+    }
+
+    res.status(200).json({ message: "Compound and folder deleted successfully", deletedCompound });
   } catch (error) {
-    console.log("error in update compound function");
-    console.log(error.message);
+    console.error("Error in deleteCompound function:", error.message);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
