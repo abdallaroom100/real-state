@@ -33,7 +33,7 @@ const multiUpload = upload.fields([
 
 router.get("/",getAllApartments)
 router.get("/:compoundId",getAllCompoundApartment)
-router.get("/find/:id",protectRoute,getCurrentApartment)
+router.get("/find/:id",getCurrentApartment)
 router.post("/add/:compoundId",multiUpload,addApartment)
 router.patch("/update/:apartmentId",multiUpload,updateApartment)
 router.delete("/delete/:apartmentId",protectRoute,deleteApartment)
