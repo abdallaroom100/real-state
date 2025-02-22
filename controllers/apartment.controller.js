@@ -75,15 +75,15 @@ export const addApartment = async (req, res) => {
 
     // **1. Generate IDs with file extensions if files exist**
     const videoId = req.files?.video
-      ? `${uuidv4()}-${req.files.video[0].originalname}`
+      ? `${uuidv4()}${path.extname(req.files.video[0].originalname)}`
       : null;
 
     const mainImageId = req.files?.mainImage
-      ? `${uuidv4()}-${req.files.mainImage[0].originalname}`
+      ? `${uuidv4()}${path.extname(req.files.mainImage[0].originalname)}`
       : null;
 
     const imagesIds = req.files?.images
-      ? req.files.images.map((file) => `${uuidv4()}-${file.originalname}`)
+      ? req.files.images.map((file) => `${uuidv4()}${path.extname(file.originalname)}`)
       : [];
 
     // **2. Create the apartment in the database**
