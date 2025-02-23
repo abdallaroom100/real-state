@@ -27,7 +27,7 @@ app.use('/uploads', express.static('uploads'));
 app.use(cookieParser())
 app.use("/home", home);
 app.use("/compound", compoundRouter);
-app.use("/apartment", apartmentRouter);
+app.use("/apartment", apartmentRouter); 
 app.use("/user", userRouter);
 // Routes
 connectDb()
