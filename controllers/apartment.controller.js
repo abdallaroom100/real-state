@@ -101,7 +101,16 @@ export const addApartment = async (req, res) => {
       identity,
       compound: compoundId,
     });
-
+      newApartment.mainImage = req.files?.mainImage
+      ? `uploads/${compoundId}/${newApartment._id}/images/${mainImageId}`
+      : null;
+      newApartment.video = req.files?.video
+      ? `uploads/${compoundId}/${newApartment._id}/videos/${videoId}`
+      : null;
+      newApartment.images = newApartment.images.map(image=>{
+        return `uploads/${compoundId}/${newApartment._id}/images/${image}`
+      })
+      await newApartment.save()
     // **3. إنشاء المجلدات إذا كان هناك ملفات**
     const compoundFolder = path.join("uploads", compoundId);
     const apartmentFolder = path.join(compoundFolder, newApartment._id.toString());
@@ -518,13 +527,12 @@ export const addApartment = async (req, res) => {
 const moveFile = (oldPath, newPath) => {
   if (fs.existsSync(oldPath)) {
     fs.renameSync(oldPath, newPath);
-    return path.basename(newPath);
+    return newPath.replace(/\\/g, "/");
   }
   console.error(`File not found: ${oldPath}`);
   return null;
 };
 
-// دالة لحذف الملفات
 const deleteFile = (filePath) => {
   if (fs.existsSync(filePath)) {
     fs.unlinkSync(filePath);
@@ -540,7 +548,7 @@ export const updateApartment = async (req, res) => {
     }
 
     const {
-      images: keptImageIds = [],
+      images: keptImageUrls = [],
       space,
       floor,
       bathrooms,
@@ -574,62 +582,62 @@ export const updateApartment = async (req, res) => {
       return res.status(400).json({ error: "Compound ID not found for this apartment" });
     }
 
-    const compoundFolder = path.join("uploads", compoundId.toString());
-    const apartmentFolder = path.join(compoundFolder, apartmentId);
-    const imagesFolder = path.join(apartmentFolder, "images");
-    const videoFolder = path.join(apartmentFolder, "video");
+    const basePath = path.join("uploads", compoundId.toString(), apartmentId);
+    const imagesFolder = path.join(basePath, "images");
+    const videoFolder = path.join(basePath, "videos");
 
-    [compoundFolder, apartmentFolder, imagesFolder, videoFolder].forEach((folder) => {
+    [basePath, imagesFolder, videoFolder].forEach((folder) => {
       if (!fs.existsSync(folder)) {
         fs.mkdirSync(folder, { recursive: true });
       }
     });
 
-    // **1. تحديث Main Image**
+    if (!req.body.video) {
+      fs.readdirSync(videoFolder).forEach((file) => {
+        deleteFile(path.join(videoFolder, file));
+      });
+      apartment.video = null;
+    }
+
     if (mainImageFile) {
       if (apartment.mainImage) deleteFile(path.join(imagesFolder, apartment.mainImage));
       const mainImageId = uuidv4();
-      const mainImagePath = path.join(imagesFolder, `${mainImageId}${path.extname(mainImageFile.originalname)}`);
+      const mainImagePath = path.join(imagesFolder, `${mainImageId}${path.extname(mainImageFile.originalname)}`).replace(/\\/g, "/");
       apartment.mainImage = moveFile(mainImageFile.path, mainImagePath);
     }
 
-    // **2. حذف الصور الغير موجودة في الـ IDs المرسلة مع الامتداد**
+    const keptImageNames = keptImageUrls.map(url => path.basename(url));
+
     apartment.images.forEach((imgName) => {
-      if (!keptImageIds.includes(imgName)) {
+      if (!keptImageNames.includes(imgName)) {
         deleteFile(path.join(imagesFolder, imgName));
       }
     });
 
-    // **3. إضافة الصور الجديدة**
     const newImagePaths = [];
     newImages.forEach((image) => {
       const imageId = uuidv4();
-      const imagePath = path.join(imagesFolder, `${imageId}${path.extname(image.originalname)}`);
+      const imagePath = path.join(imagesFolder, `${imageId}${path.extname(image.originalname)}`).replace(/\\/g, "/");
       moveFile(image.path, imagePath);
-      newImagePaths.push(path.basename(imagePath));
+      newImagePaths.push(imagePath);
     });
 
-    // **4. تحديث الفيديو**
     if (videoFile) {
-      if (apartment.video) deleteFile(path.join(videoFolder, apartment.video));
+      fs.readdirSync(videoFolder).forEach((file) => {
+        deleteFile(path.join(videoFolder, file));
+      });
       const videoId = uuidv4();
-      const videoPath = path.join(videoFolder, `${videoId}${path.extname(videoFile.originalname)}`);
+      const videoPath = path.join(videoFolder, `${videoId}${path.extname(videoFile.originalname)}`).replace(/\\/g, "/");
       apartment.video = moveFile(videoFile.path, videoPath);
     }
 
-    // **4.1 حذف الفيديو إذا طلب المستخدم ذلك**
     if (deleteVideo && apartment.video) {
       deleteFile(path.join(videoFolder, apartment.video));
       apartment.video = null;
     }
 
-    // **5. تحديث قائمة الصور**
-    apartment.images = [
-      ...apartment.images.filter((imgName) => keptImageIds.includes(imgName)),
-      ...newImagePaths,
-    ];
+    apartment.images = [...keptImageNames, ...newImagePaths];
 
-    // **6. تحديث البيانات الأخرى**
     Object.assign(apartment, {
       space,
       floor,
@@ -646,13 +654,14 @@ export const updateApartment = async (req, res) => {
     res.status(200).json({
       message: "Apartment updated successfully",
       apartment,
-      newImageIds: newImagePaths.map((fileName) => fileName.split(".")[0]),
+      newImagePaths,
     });
   } catch (error) {
     console.error("Error in updateApartment function:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 // export const deleteApartment = async (req,res)=>{
 //     const {apartmentId} = req.params
