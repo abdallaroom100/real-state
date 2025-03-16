@@ -10,7 +10,8 @@ import cookieParser from "cookie-parser"
 import fs from "fs"
 // Middlewares
 const app = express();
-app.use(express.json());
+app.use(express.json({ limit: "1gb" }));
+app.use(express.urlencoded({ limit: "1gb", extended: true }));
 app.use(cors({ 
     origin: true,
     credentials: true,

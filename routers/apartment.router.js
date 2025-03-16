@@ -5,7 +5,9 @@ import multer from "multer"
 import fs from "fs"
 const router = express.Router()
 
-const upload = multer({ dest: 'uploads/' }); // مجلد حفظ الملفات
+const upload = multer({ dest: 'uploads/',
+  limits: { fileSize: 1024 * 1024 * 1024 },
+ }); // مجلد حفظ الملفات
 
 // export const clearTempFiles = (req, res, next) => {
 //     if (req.files) {

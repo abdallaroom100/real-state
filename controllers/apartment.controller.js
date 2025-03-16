@@ -557,7 +557,7 @@ export const updateApartment = async (req, res) => {
       price,
       rooms,
       identity,
-      deleteVideo = false
+      deleteVideo = false,
     } = req.body;
 
     const mainImageFile = req.files?.mainImage?.[0];
@@ -606,20 +606,27 @@ export const updateApartment = async (req, res) => {
       apartment.mainImage = moveFile(mainImageFile.path, mainImagePath);
     }
 
-    const keptImageNames = keptImageUrls.map(url => path.basename(url));
+    // تعديل: تحويل keptImageUrls لمسارات كاملة لو كانت أسماء ملفات فقط
+    const keptImagePaths = keptImageUrls.map((url) => {
+      const fileName = path.basename(url); // استخراج اسم الملف من الـ URL
+      return path.join(imagesFolder, fileName).replace(/\\/g, "/"); // المسار الكامل
+    });
 
-    apartment.images.forEach((imgName) => {
-      if (!keptImageNames.includes(imgName)) {
+    // حذف الصور القديمة اللي مش موجودة في keptImageUrls
+    apartment.images.forEach((imgPath) => {
+      const imgName = path.basename(imgPath);
+      if (!keptImageUrls.includes(imgName) && !keptImageUrls.includes(imgPath)) {
         deleteFile(path.join(imagesFolder, imgName));
       }
     });
 
+    // إضافة الصور الجديدة مع المسارات الكاملة
     const newImagePaths = [];
     newImages.forEach((image) => {
       const imageId = uuidv4();
       const imagePath = path.join(imagesFolder, `${imageId}${path.extname(image.originalname)}`).replace(/\\/g, "/");
       moveFile(image.path, imagePath);
-      newImagePaths.push(imagePath);
+      newImagePaths.push(imagePath); // إضافة المسار الكامل
     });
 
     if (videoFile) {
@@ -636,7 +643,8 @@ export const updateApartment = async (req, res) => {
       apartment.video = null;
     }
 
-    apartment.images = [...keptImageNames, ...newImagePaths];
+    // دمج المسارات القديمة المحتفظ بها مع الجديدة
+    apartment.images = [...keptImagePaths, ...newImagePaths];
 
     Object.assign(apartment, {
       space,
