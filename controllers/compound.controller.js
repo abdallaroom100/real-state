@@ -568,9 +568,14 @@ export const updateCompound = async (req, res) => {
     console.log("Existing images in compound:", compound.images);
 
     // ✅ **حذف الصور غير الموجودة في القائمة الجديدة ولكن استثناء `mainImage`**
-    compound.images?.forEach((oldPath) => {
-      if (!newImagePaths.includes(oldPath) && oldPath !== compound.mainImage) {
-        deleteFile(oldPath);
+    const existingFiles = fs.existsSync(imagesFolder) ? fs.readdirSync(imagesFolder) : [];
+
+    existingFiles.forEach(file => {
+      const fullPath = path.join(imagesFolder, file).replace(/\\/g, "/");
+    
+      // لو الصورة مش ضمن الصور اللي جاية من الواجهة أو اللي اترفعت، ومش هي المين إيميج => نحذفها
+      if (!newImagePaths.includes(fullPath) && fullPath !== compound.mainImage) {
+        deleteFile(fullPath);
       }
     });
 
