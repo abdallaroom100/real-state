@@ -23,6 +23,7 @@ export const getAllCompoundApartment = async (req, res) => {
 export const getAllApartments = async(req,res)=>{
   try {
     const apartments = await Apartment.find()
+   
     if(!apartments) {
       return res.status(400).json({error:"there is not apartments "})
     }
@@ -63,7 +64,7 @@ export const addApartment = async (req, res) => {
       return res.status(401).json({ error: "Invalid compound ID" });
     }
 
-    const { space, floor, bathrooms, description, status, rooms, price, identity } = req.body;
+    const { space, floor, bathrooms, description, status, rooms, price, identity, model } = req.body;
 
     if (!space || !floor || !status || !bathrooms || !description || !rooms || !identity || !price) {
       return res.status(401).json({ error: "Please fill all fields" });
@@ -91,6 +92,7 @@ export const addApartment = async (req, res) => {
       mainImage: mainImageId,
       images: imagesIds,
       video: videoId,
+       model: model?model:"",
       space,
       floor,
       status,
@@ -160,6 +162,7 @@ export const addApartment = async (req, res) => {
       videoId,
       mainImageId,
       imagesIds,
+      model: model?model:""
     });
   } catch (error) {
     console.error("Error in addApartment function:", error.message);
@@ -558,6 +561,7 @@ export const updateApartment = async (req, res) => {
       rooms,
       identity,
       deleteVideo = false,
+      model
     } = req.body;
 
     const mainImageFile = req.files?.mainImage?.[0];
@@ -655,6 +659,7 @@ export const updateApartment = async (req, res) => {
       price,
       rooms,
       identity,
+       model: model?model:""
     });
 
     await apartment.save();

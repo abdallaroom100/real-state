@@ -5,8 +5,8 @@ import fs from "fs"
 import { v4 as uuidv4 } from 'uuid';
 export const getAllCompounds = async (req, res) => {
   try {
+ 
     const compounds = await Compound.find();
-
     res.status(200).json(compounds);
   } catch (error) {
     console.log("error in get all compound function");
@@ -20,6 +20,7 @@ export const getCurrentCompound = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({ error: "not valid compound id" });
     }
+   
     const compound = await Compound.findById(id);
     if (!compound)
       return res.status(401).json({ error: "the compound not found" });
@@ -83,7 +84,7 @@ export const addCompound = async (req, res) => {
   try {
     const { title, location, status, description, address, map } = req.body;
 
-    if (!title || !location || !status || !description || !address) {
+    if (!title || !location || !status || !description || !address ) {
       return res.status(401).json({ error: "Please fill all fields" });
     }
 
@@ -131,6 +132,7 @@ export const addCompound = async (req, res) => {
       address,
       description,
       map,
+       model: model?model:"",
       mainImage: mainImageId,
       images: imageIds,
       video: videoId,
@@ -187,6 +189,7 @@ export const addCompound = async (req, res) => {
       images: imageIds,
       video: videoId,
       pdf: pdfId,
+       model: model?model:""
     });
      
   } catch (error) {
@@ -521,7 +524,7 @@ export const updateCompound = async (req, res) => {
       return res.status(400).json({ error: "Invalid ID" });
     }
 
-    const { title, location, status, description, address, map, images: imageUrls, video: videoId, pdf: pdfId } = req.body;
+    const { title, location, status,model, description, address, map, images: imageUrls, video: videoId, pdf: pdfId } = req.body;
 
     if (!title || !location || !status || !description || !address) {
       return res.status(401).json({ error: "Fill all required fields for updating" });
@@ -631,6 +634,7 @@ export const updateCompound = async (req, res) => {
         address,
         map,
         pdf: newPdfId,
+         model: model?model:""
       },
       { new: true }
     );

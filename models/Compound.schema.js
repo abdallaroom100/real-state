@@ -16,6 +16,10 @@ const compoundSchema = new Schema(
       type: String,
       default: "",
     },
+    model:{
+      type:String,
+      default:""
+    },
     title: {
       type: String,
       required: true,
@@ -68,6 +72,11 @@ const ApartmentSchema = new Schema({
   rooms:{
     type:String,
     required:true,
+  },
+  model:{
+    type:String,
+    default:"",
+    
   },
   space: {
     type: String,
